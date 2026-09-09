@@ -8,6 +8,7 @@ export const size = {
   height: 630,
 };
 export const contentType = "image/png";
+export const revalidate = 3600;
 
 const radiusMap: Record<string, number> = {
   none: 0,
@@ -47,8 +48,9 @@ export default async function OGImage({ params }: { params: Promise<{ username: 
   }
   const username = decodedUsername.slice(1);
 
-  const user = await db.user.findUnique({
-    where: { username },
+  const user = await db.user.findFirst({
+    where: { username: { equals: username, mode: "insensitive" } },
+    orderBy: { createdAt: "asc" },
     select: {
       id: true,
       name: true,

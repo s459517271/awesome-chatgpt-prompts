@@ -47,6 +47,7 @@ model User {
   notifications         Notification[]         @relation("NotificationRecipient")
   notificationsActed    Notification[]         @relation("NotificationActor")
   collections           Collection[]
+  userPromptExamples    UserPromptExample[]
 
   @@map("users")
 }
@@ -127,6 +128,7 @@ model Prompt {
   outgoingConnections PromptConnection[] @relation("ConnectionSource")
   incomingConnections PromptConnection[] @relation("ConnectionTarget")
   collectedBy         Collection[]
+  userExamples        UserPromptExample[]
   bestWithModels      String[]           // Model slugs this prompt works best with (max 3), e.g. ["gpt-4o", "claude-3-5-sonnet"]
   bestWithMCP         Json?              // MCP configs array, e.g. [{command: "npx -y @mcp/server", tools: ["tool1"]}]
   workflowLink        String?            // URL to test/demo the workflow when prompt has previous/next connections
@@ -137,6 +139,8 @@ model Prompt {
   @@index([isPrivate])
   @@index([isFeatured])
   @@index([isUnlisted])
+  @@index([slug])
+  @@index([isPrivate, isUnlisted, deletedAt, createdAt(sort: Desc)])
   @@map("prompts")
 }
 
@@ -269,6 +273,21 @@ model Collection {
   @@map("collections")
 }
 
+model UserPromptExample {
+  id        String   @id @default(cuid())
+  mediaUrl  String
+  comment   String?
+  createdAt DateTime @default(now())
+  promptId  String
+  userId    String
+  prompt    Prompt   @relation(fields: [promptId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([promptId])
+  @@index([userId])
+  @@map("user_prompt_examples")
+}
+
 model PromptReport {
   id         String       @id @default(cuid())
   reason     ReportReason
@@ -392,6 +411,7 @@ enum PromptType {
   AUDIO
   STRUCTURED
   SKILL
+  TASTE
 }
 
 enum StructuredFormat {

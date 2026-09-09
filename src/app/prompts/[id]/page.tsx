@@ -8,6 +8,7 @@ import { AnimatedDate } from "@/components/ui/animated-date";
 import { ShareDropdown } from "@/components/prompts/share-dropdown";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { canViewPrompt } from "@/lib/prompt-access";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,7 +23,7 @@ import { VersionCompareModal } from "@/components/prompts/version-compare-modal"
 import { VersionCompareButton } from "@/components/prompts/version-compare-button";
 import { FeaturePromptButton } from "@/components/prompts/feature-prompt-button";
 import { UnlistPromptButton } from "@/components/prompts/unlist-prompt-button";
-import { MediaPreview } from "@/components/prompts/media-preview";
+import { UserExamplesSection } from "@/components/prompts/user-examples-section";
 import { DelistBanner } from "@/components/prompts/delist-banner";
 import { RestorePromptButton } from "@/components/prompts/restore-prompt-button";
 import { CommentSection } from "@/components/comments";
@@ -61,11 +62,18 @@ export async function generateMetadata({ params }: PromptPageProps): Promise<Met
   const id = extractPromptId(idParam);
   const prompt = await db.prompt.findUnique({
     where: { id },
-    select: { title: true, description: true },
+    select: { title: true, description: true, isPrivate: true, authorId: true },
   });
 
   if (!prompt) {
     return { title: "Prompt Not Found" };
+  }
+
+  if (prompt.isPrivate) {
+    const session = await auth();
+    if (!canViewPrompt(prompt, session)) {
+      return { title: "Prompt Not Found" };
+    }
   }
 
   return {
@@ -223,7 +231,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
   }
 
   // Check if user can view private prompt
-  if (prompt.isPrivate && prompt.authorId !== session?.user?.id) {
+  if (!canViewPrompt(prompt, session)) {
     notFound();
   }
 
@@ -535,12 +543,16 @@ export default async function PromptPage({ params }: PromptPageProps) {
         </div>
 
         <TabsContent value="content" className="space-y-4 mt-0">
-          {/* Media Preview (for image/video prompts) */}
+          {/* Media Preview with User Examples (for image/video prompts) */}
           {prompt.mediaUrl && (
-            <MediaPreview 
+            <UserExamplesSection 
               mediaUrl={prompt.mediaUrl} 
               title={prompt.title} 
-              type={prompt.type} 
+              type={prompt.type}
+              promptId={prompt.id}
+              isLoggedIn={!!session?.user}
+              currentUserId={session?.user?.id}
+              isAdmin={isAdmin}
             />
           )}
 
@@ -565,6 +577,18 @@ export default async function PromptPage({ params }: PromptPageProps) {
                 content={prompt.content} 
                 promptId={prompt.id}
                 promptSlug={prompt.slug ?? undefined}
+              />
+            ) : prompt.type === "TASTE" ? (
+              <InteractivePromptContent 
+                content={prompt.content} 
+                title="taste.md"
+                isLoggedIn={!!session?.user}
+                promptId={prompt.id}
+                promptSlug={prompt.slug ?? undefined}
+                promptType={prompt.type}
+                shareTitle={prompt.title}
+                promptTitle={prompt.title}
+                promptDescription={prompt.description ?? undefined}
               />
             ) : prompt.structuredFormat ? (
               <InteractivePromptContent 
@@ -655,8 +679,8 @@ export default async function PromptPage({ params }: PromptPageProps) {
             </div>
           )}
 
-          {/* Report & Prompt Flow - hide for SKILL type */}
-          {prompt.type !== "SKILL" && (
+          {/* Report & Prompt Flow - hide for SKILL and TASTE types */}
+          {prompt.type !== "SKILL" && prompt.type !== "TASTE" && (
             <PromptFlowSection
               promptId={prompt.id}
               promptTitle={prompt.title}

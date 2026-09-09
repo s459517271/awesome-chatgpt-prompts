@@ -9,28 +9,29 @@ export interface Platform {
 
 // Image generation platforms (Mitte.ai)
 export const imagePlatforms: Platform[] = [
-  { id: "mitte-nano-banana", name: "Mitte.ai - Nano Banana", baseUrl: "https://mitte.ai?model=nano-banana", sponsor: true },
-  { id: "mitte-nano-banana-pro", name: "Mitte.ai - Nano Banana Pro", baseUrl: "https://mitte.ai?model=nano-banana-pro", sponsor: true },
-  { id: "mitte-flux-2-flex", name: "Mitte.ai - Flux 2 Flex", baseUrl: "https://mitte.ai?model=flux-2-flex", sponsor: true },
-  { id: "mitte-flux-2", name: "Mitte.ai - Flux 2", baseUrl: "https://mitte.ai?model=flux-2", sponsor: true },
+  { id: "mitte-nano-banana", name: "Mitte.ai - Nano Banana", baseUrl: "https://mitte.ai?model=nano-banana", sponsor: false },
+  { id: "mitte-nano-banana-pro", name: "Mitte.ai - Nano Banana Pro", baseUrl: "https://mitte.ai?model=nano-banana-pro", sponsor: false },
+  { id: "mitte-flux-2-flex", name: "Mitte.ai - Flux 2 Flex", baseUrl: "https://mitte.ai?model=flux-2-flex", sponsor: false },
+  { id: "mitte-flux-2", name: "Mitte.ai - Flux 2", baseUrl: "https://mitte.ai?model=flux-2", sponsor: false },
 ];
 
 // Video generation platforms (Mitte.ai)
 export const videoPlatforms: Platform[] = [
-  { id: "mitte-veo-31", name: "Mitte.ai - Veo 3.1", baseUrl: "https://mitte.ai?model=veo-31", sponsor: true },
-  { id: "mitte-kling-26", name: "Mitte.ai - Kling 2.6", baseUrl: "https://mitte.ai?model=kling-26", sponsor: true },
-  { id: "mitte-sora-2", name: "Mitte.ai - Sora 2", baseUrl: "https://mitte.ai?model=sora-2", sponsor: true },
-  { id: "mitte-remotion", name: "Mitte.ai - Remotion", baseUrl: "https://mitte.ai?model=remotion", sponsor: true },
+  { id: "mitte-veo-31", name: "Mitte.ai - Veo 3.1", baseUrl: "https://mitte.ai?model=veo-31", sponsor: false },
+  { id: "mitte-kling-26", name: "Mitte.ai - Kling 2.6", baseUrl: "https://mitte.ai?model=kling-26", sponsor: false },
+  { id: "mitte-sora-2", name: "Mitte.ai - Sora 2", baseUrl: "https://mitte.ai?model=sora-2", sponsor: false },
+  { id: "mitte-remotion", name: "Mitte.ai - Remotion", baseUrl: "https://mitte.ai?model=remotion", sponsor: false },
 ];
 
 export const codePlatforms: Platform[] = [
   { id: "windsurf", name: "Windsurf", baseUrl: "windsurf://", isDeeplink: true, supportsQuerystring: false, sponsor: true },
-  { id: "vscode", name: "VS Code", baseUrl: "vscode://", isDeeplink: true, supportsQuerystring: false },
-  { id: "vscode-insiders", name: "VS Code Insiders", baseUrl: "vscode-insiders://", isDeeplink: true, supportsQuerystring: false },
+  { id: "vscode", name: "VS Code", baseUrl: "vscode://GitHub.Copilot-Chat/chat", isDeeplink: true },
+  { id: "vscode-insiders", name: "VS Code Insiders", baseUrl: "vscode-insiders://GitHub.Copilot-Chat/chat", isDeeplink: true },
   { id: "cursor", name: "Cursor", baseUrl: "cursor://anysphere.cursor-deeplink/prompt", isDeeplink: true },
   { id: "goose", name: "Goose", baseUrl: "goose://recipe", isDeeplink: true },
   { id: "github-copilot", name: "GitHub Copilot Chat", baseUrl: "https://github.com/copilot" },
   { id: "github-copilot-agents", name: "GitHub Copilot Agents", baseUrl: "https://github.com/copilot/agents" },
+  { id: "netlify", name: "Netlify", baseUrl: "https://app.netlify.com/run" },
   { id: "bolt", name: "Bolt", baseUrl: "https://bolt.new" },
   { id: "lovable", name: "Lovable", baseUrl: "https://lovable.dev" },
   { id: "v0", name: "v0", baseUrl: "https://v0.dev/chat" },
@@ -70,6 +71,9 @@ export function buildUrl(
   switch (platformId) {
     case "cursor":
       return `${baseUrl}?text=${encoded}`;
+    case "vscode":
+    case "vscode-insiders":
+      return `${baseUrl}?prompt=${encoded}`;
     case "goose": {
       const config = JSON.stringify({
         version: "1.0.0",
@@ -103,6 +107,8 @@ export function buildUrl(
       return `${baseUrl}/?prompt=${encoded}`;
     case "lovable":
       return `${baseUrl}/?autosubmit=true#prompt=${encoded}`;
+    case "netlify":
+      return `${baseUrl}?prompt=${encoded}&ref=prompts-chat`;
     case "mistral":
       return `${baseUrl}?q=${encoded}`;
     case "perplexity":

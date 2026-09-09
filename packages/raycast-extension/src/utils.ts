@@ -175,21 +175,27 @@ export const codePlatforms: Platform[] = [
   {
     id: "vscode",
     name: "VS Code",
-    baseUrl: "vscode://",
-    supportsQuerystring: false,
+    baseUrl: "vscode://GitHub.Copilot-Chat/chat",
+    supportsQuerystring: true,
     isDeeplink: true,
   },
   {
     id: "vscode-insiders",
     name: "VS Code Insiders",
-    baseUrl: "vscode-insiders://",
-    supportsQuerystring: false,
+    baseUrl: "vscode-insiders://GitHub.Copilot-Chat/chat",
+    supportsQuerystring: true,
     isDeeplink: true,
   },
   {
     id: "github-copilot",
     name: "GitHub Copilot",
     baseUrl: "https://github.com/copilot",
+    supportsQuerystring: true,
+  },
+  {
+    id: "netlify",
+    name: "Netlify",
+    baseUrl: "https://app.netlify.com/run",
     supportsQuerystring: true,
   },
   {
@@ -219,24 +225,10 @@ export const codePlatforms: Platform[] = [
 ];
 
 // Image generation platforms
-export const imagePlatforms: Platform[] = [
-  {
-    id: "mitte-image",
-    name: "Mitte.ai (Image)",
-    baseUrl: "https://mitte.ai",
-    supportsQuerystring: true,
-  },
-];
+export const imagePlatforms: Platform[] = [];
 
 // Video generation platforms
-export const videoPlatforms: Platform[] = [
-  {
-    id: "mitte-video",
-    name: "Mitte.ai (Video)",
-    baseUrl: "https://mitte.ai",
-    supportsQuerystring: true,
-  },
-];
+export const videoPlatforms: Platform[] = [];
 
 export function buildUrl(
   platformId: string,
@@ -251,6 +243,9 @@ export function buildUrl(
     // IDE deeplinks
     case "cursor":
       return `${baseUrl}?text=${encoded}`;
+    case "vscode":
+    case "vscode-insiders":
+      return `${baseUrl}?prompt=${encoded}`;
     case "goose":
     case "goose-chat": {
       const config = JSON.stringify({
@@ -292,6 +287,8 @@ export function buildUrl(
       return `${baseUrl}/?prompt=${encoded}`;
     case "lovable":
       return `${baseUrl}/?autosubmit=true#prompt=${encoded}`;
+    case "netlify":
+      return `${baseUrl}?prompt=${encoded}&ref=prompts-chat`;
     case "mistral":
       return `${baseUrl}?q=${encoded}`;
     case "perplexity":

@@ -13,7 +13,7 @@ const promptSchema = z.object({
   title: z.string().min(1).max(200),
   description: z.string().max(500).optional(),
   content: z.string().min(1),
-  type: z.enum(["TEXT", "IMAGE", "VIDEO", "AUDIO", "SKILL"]), // Output type or SKILL
+  type: z.enum(["TEXT", "IMAGE", "VIDEO", "AUDIO", "SKILL", "TASTE"]), // Output type, SKILL, or TASTE
   structuredFormat: z.enum(["JSON", "YAML"]).nullish(), // Input type indicator
   categoryId: z.string().optional(),
   tagIds: z.array(z.string()),
@@ -306,11 +306,33 @@ export async function POST(request: Request) {
 }
 
 // List prompts (for API access)
+const MAX_API_PER_PAGE = 100;
+const DEFAULT_API_PER_PAGE = 24;
+const MAX_API_PAGE = 10000;
+const DEFAULT_API_PAGE = 1;
+
+const paginationQuerySchema = z.object({
+  page: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .transform((value) => Math.min(value, MAX_API_PAGE))
+    .catch(DEFAULT_API_PAGE),
+  perPage: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .transform((value) => Math.min(value, MAX_API_PER_PAGE))
+    .catch(DEFAULT_API_PER_PAGE),
+});
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const perPage = parseInt(searchParams.get("perPage") || "24");
+    const { page, perPage } = paginationQuerySchema.parse({
+      page: searchParams.get("page"),
+      perPage: searchParams.get("perPage"),
+    });
     const type = searchParams.get("type");
     const categoryId = searchParams.get("category");
     const tag = searchParams.get("tag");
@@ -335,11 +357,17 @@ export async function GET(request: Request) {
     }
 
     if (tag) {
-      where.tags = {
-        some: {
-          tag: { slug: tag },
-        },
-      };
+      // Handle multiple tags (comma-separated)
+      const tagSlugs = tag.split(",").map(t => t.trim()).filter(Boolean);
+      if (tagSlugs.length > 0) {
+        where.AND = tagSlugs.map(slug => ({
+          tags: {
+            some: {
+              tag: { slug },
+            },
+          },
+        }));
+      }
     }
 
     if (q) {
@@ -401,6 +429,21 @@ export async function GET(request: Request) {
               contributors: true,
               outgoingConnections: { where: { label: { not: "related" } } },
               incomingConnections: { where: { label: { not: "related" } } },
+            },
+          },
+          userExamples: {
+            take: 5,
+            orderBy: { createdAt: "desc" },
+            select: {
+              id: true,
+              mediaUrl: true,
+              user: {
+                select: {
+                  username: true,
+                  name: true,
+                  avatar: true,
+                },
+              },
             },
           },
         },

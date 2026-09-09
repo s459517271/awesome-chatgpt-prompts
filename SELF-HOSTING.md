@@ -32,9 +32,24 @@ This guide explains how to deploy **prompts.chat** on your own private server fo
 
 ## Prerequisites
 
-- **Node.js** 18+ 
+- **Node.js** 24.x
 - **PostgreSQL** database
-- **npm** or **yarn**
+- **npm**
+
+## Recommended Database
+
+prompts.chat requires PostgreSQL. For a hosted PostgreSQL database, we recommend [Neon](https://get.neon.com/VqfnMo4): it provides serverless Postgres, connection pooling, and branching that work well for self-hosted prompts.chat deployments.
+
+<div>
+  <p>Sponsored by</p>
+  <a href="https://get.neon.com/VqfnMo4">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/f/prompts.chat/main/public/sponsors/neon-dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/f/prompts.chat/main/public/sponsors/neon.svg">
+      <img width="250px" alt="Neon Logo fallback" src="https://raw.githubusercontent.com/f/prompts.chat/main/public/sponsors/neon-dark.svg">
+    </picture>
+  </a>
+</div>
 
 ## Environment Variables
 
@@ -80,8 +95,8 @@ This will:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/f/awesome-chatgpt-prompts.git
-   cd awesome-chatgpt-prompts
+   git clone https://github.com/f/prompts.chat.git
+   cd prompts.chat
    ```
 
 2. **Install dependencies**
@@ -202,4 +217,4 @@ This is ideal for organizations that want to deploy their own white-labeled prom
 
 ## Support
 
-For issues and questions, please open a [GitHub Issue](https://github.com/f/awesome-chatgpt-prompts/issues).
+For issues and questions, please open a [GitHub Issue](https://github.com/f/prompts.chat/issues).

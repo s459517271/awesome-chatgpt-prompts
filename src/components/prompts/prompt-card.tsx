@@ -2,9 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
-import { formatDistanceToNow } from "@/lib/date";
 import { getPromptUrl } from "@/lib/urls";
 import { ArrowBigUp, Lock, Copy, ImageIcon, Download, Play, BadgeCheck, Volume2, Link2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +12,7 @@ import { prettifyJson } from "@/lib/format";
 import { PinButton } from "@/components/prompts/pin-button";
 import { RunPromptButton } from "@/components/prompts/run-prompt-button";
 import { VariableFillModal, hasVariables, renderContentWithVariables } from "@/components/prompts/variable-fill-modal";
+import { ExamplesSlider } from "@/components/prompts/examples-slider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AudioPlayer } from "@/components/prompts/audio-player";
 import {
@@ -73,6 +72,15 @@ export interface PromptCardProps {
       outgoingConnections?: number;
       incomingConnections?: number;
     };
+    userExamples?: Array<{
+      id: string;
+      mediaUrl: string;
+      user: {
+        username: string;
+        name: string | null;
+        avatar: string | null;
+      };
+    }>;
   };
   showPinButton?: boolean;
   isPinned?: boolean;
@@ -81,7 +89,7 @@ export interface PromptCardProps {
 export function PromptCard({ prompt, showPinButton = false, isPinned = false }: PromptCardProps) {
   const t = useTranslations("prompts");
   const tCommon = useTranslations("common");
-  const locale = useLocale();
+  const _locale = useLocale();
   const outgoingCount = prompt._count?.outgoingConnections || 0;
   const incomingCount = prompt._count?.incomingConnections || 0;
   const isFlowStart = outgoingCount > 0 && incomingCount === 0;
@@ -94,7 +102,7 @@ export function PromptCard({ prompt, showPinButton = false, isPinned = false }: 
   const isVideo = prompt.type === "VIDEO";
   const hasMediaBackground = prompt.type === "IMAGE" || isVideo || (isStructuredInput && !!prompt.mediaUrl && !isAudio);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [_isVisible, setIsVisible] = useState(false);
 
   // Autoplay video when visible in viewport
   useEffect(() => {
@@ -178,7 +186,14 @@ export function PromptCard({ prompt, showPinButton = false, isPinned = false }: 
       {hasMediaBackground && (
         <div className="relative bg-muted">
           {prompt.mediaUrl && !imageError ? (
-            isVideo ? (
+            prompt.userExamples && prompt.userExamples.length > 0 ? (
+              <ExamplesSlider
+                examples={prompt.userExamples}
+                mainMediaUrl={prompt.mediaUrl}
+                title={prompt.title}
+                isVideo={isVideo}
+              />
+            ) : isVideo ? (
               <video
                 ref={videoRef}
                 src={prompt.mediaUrl}

@@ -125,6 +125,11 @@ const coreContributors = [
     x: "fatihsolhann",
   },
   {
+    username: "JohnPhamous",
+    role: "Performance (Vercel)",
+    x: "JohnPhamous",
+  },
+  {
     username: "claude-opus-4.5",
     displayName: "Claude Opus 4.5",
     role: "Core Coder, DevOps, Frontend, Backend, DB",
@@ -166,6 +171,15 @@ const designCredits = [
     role: "App Design and Layout, Colors",
     isAI: true,
     icon: "anthropic",
+  },
+];
+
+const securityCredits = [
+  {
+    username: "mdisec",
+    displayName: "Mehmet Ince",
+    role: "Security Fixes",
+    x: "mdisec",
   },
 ];
 
@@ -302,7 +316,7 @@ export default async function AboutPage() {
         <p className="text-muted-foreground">
           {t.rich("story1Rich", {
             repoLink: (chunks) => (
-              <Link href="https://github.com/f/awesome-chatgpt-prompts" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+              <Link href="https://github.com/f/prompts.chat" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
                 {chunks}
               </Link>
             ),
@@ -430,7 +444,7 @@ export default async function AboutPage() {
               <li>
                 {t.rich("githubStars", {
                   link: (chunks) => (
-                    <Link href="https://github.com/f/awesome-chatgpt-prompts" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+                    <Link href="https://github.com/f/prompts.chat" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
                       {chunks}
                     </Link>
                   ),
@@ -457,7 +471,7 @@ export default async function AboutPage() {
               <li>
                 {t.rich("huggingFace", {
                   link: (chunks) => (
-                    <Link href="https://huggingface.co/datasets/fka/awesome-chatgpt-prompts" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+                    <Link href="https://huggingface.co/datasets/fka/prompts.chat" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
                       {chunks}
                     </Link>
                   ),
@@ -561,6 +575,53 @@ export default async function AboutPage() {
                   )}
                 </div>
               )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Security */}
+      <section className="mb-10">
+        <h2 className="text-lg font-semibold mb-4">{t("securityTitle")}</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {securityCredits.map((contributor) => (
+            <div
+              key={contributor.username}
+              className="flex items-center gap-3 p-3 border rounded-lg"
+            >
+              <Image
+                src={`https://github.com/${contributor.username}.png`}
+                alt=""
+                width={40}
+                height={40}
+                className="rounded-full shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <div className="font-medium text-sm">
+                  {contributor.displayName ?? `@${contributor.username}`}
+                </div>
+                <div className="text-xs text-muted-foreground">{contributor.role}</div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  href={`https://github.com/${contributor.username}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded-md hover:bg-muted transition-colors"
+                  title="GitHub"
+                >
+                  <BrandIcon name="github" />
+                </Link>
+                <Link
+                  href={`https://x.com/${contributor.x}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-1.5 rounded-md hover:bg-muted transition-colors"
+                  title="X"
+                >
+                  <BrandIcon name="x" />
+                </Link>
+              </div>
             </div>
           ))}
         </div>
@@ -687,7 +748,7 @@ export default async function AboutPage() {
             />
           ))}
           <Link
-            href="https://github.com/f/awesome-chatgpt-prompts/graphs/contributors"
+            href="https://github.com/f/prompts.chat/graphs/contributors"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center w-8 h-8 rounded-full border border-dashed text-muted-foreground hover:text-primary hover:border-primary transition-colors text-xs"
@@ -698,7 +759,7 @@ export default async function AboutPage() {
         <p className="text-sm text-muted-foreground mt-3">
           {t("viewAllContributors")}{" "}
           <Link
-            href="https://github.com/f/awesome-chatgpt-prompts/graphs/contributors"
+            href="https://github.com/f/prompts.chat/graphs/contributors"
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-foreground"

@@ -35,7 +35,7 @@ export default async function HomePage() {
   let githubStars = 139000; // fallback
   if (!useCloneBranding && config.homepage?.achievements?.enabled !== false) {
     try {
-      const res = await fetch("https://api.github.com/repos/f/awesome-chatgpt-prompts", {
+      const res = await fetch("https://api.github.com/repos/f/prompts.chat", {
         next: { revalidate: 3600 }, // Cache for 1 hour
       });
       if (res.ok) {
@@ -72,7 +72,7 @@ export default async function HomePage() {
             />
           </div>
         ) : (
-          <div className="absolute top-0 end-0 bottom-0 w-1/3 2xl:w-1/2 hidden md:block pointer-events-none">
+          <div className="absolute top-0 end-0 bottom-0 w-2/5 xl:w-[45%] 2xl:w-1/2 hidden md:block pointer-events-none overflow-hidden">
             {/* Video background */}
             <div className="absolute inset-0">
               <div className="absolute inset-0 bg-gradient-to-r rtl:bg-gradient-to-l from-background via-background/80 to-transparent z-10" />
@@ -83,7 +83,7 @@ export default async function HomePage() {
                 playsInline
                 className="absolute top-1/2 -translate-y-1/2 end-0 w-full h-auto opacity-30 dark:opacity-15 dark:invert"
               >
-                <source src="/animation_compressed.mp4" type="video/mp4" />
+                <source src="https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/public/animation_compressed.mp4" type="video/mp4" />
               </video>
             </div>
             {/* Animated input overlay and clients */}
@@ -126,7 +126,7 @@ export default async function HomePage() {
         )}
         
         <div className="container relative z-20">
-          <div className="max-w-2xl">
+          <div className="max-w-2xl lg:max-w-xl xl:max-w-2xl">
             {useCloneBranding ? (
               <>
                 <h1 className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl !text-2xl sm:!text-3xl md:!text-4xl lg:!text-5xl text-primary">
@@ -174,7 +174,7 @@ export default async function HomePage() {
                 </Button>
                 {!useCloneBranding && (
                   <Button variant="outline" size="lg" asChild>
-                    <Link href="https://github.com/f/awesome-chatgpt-prompts/blob/main/SELF-HOSTING.md" target="_blank" rel="noopener noreferrer">
+                    <Link href="https://github.com/f/prompts.chat/blob/main/SELF-HOSTING.md" target="_blank" rel="noopener noreferrer">
                       <Github className="mr-1.5 h-4 w-4" />
                       {tHomepage("setupPrivateServer")}
                     </Link>
@@ -192,7 +192,7 @@ export default async function HomePage() {
               {!useCloneBranding && (
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
                   <Link 
-                    href="https://github.com/f/awesome-chatgpt-prompts/stargazers" 
+                    href="https://github.com/f/prompts.chat/stargazers" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -313,6 +313,24 @@ export default async function HomePage() {
                     />
                   </BuiltWithLink>
                   <span>by Cognition</span>
+                  <span className="mx-0.5">·</span>
+                  <span>hosted on</span>
+                  <Link href="https://vercel.com/oss" target="_blank" rel="noopener noreferrer" className="inline-flex items-center opacity-60 hover:opacity-100 transition-opacity">
+                    <Image
+                      src="/sponsors/vercel-oss.svg"
+                      alt="Vercel OSS Program"
+                      width={240}
+                      height={24}
+                      className="h-4.5 w-auto dark:hidden"
+                    />
+                    <Image
+                      src="/sponsors/vercel-oss-dark.svg"
+                      alt="Vercel OSS Program"
+                      width={240}
+                      height={24}
+                      className="h-4.5 w-auto hidden dark:block"
+                    />
+                  </Link>
                 </span>
               </div>
             )}
@@ -344,15 +362,15 @@ export default async function HomePage() {
                     <Github className="h-4 w-4" />
                     <span>{tHomepage("achievements.referencedIn")} <strong>{tHomepage("achievements.githubBlog")}</strong></span>
                   </Link>
-                  <Link href="https://huggingface.co/datasets/fka/awesome-chatgpt-prompts" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+                  <Link href="https://huggingface.co/datasets/fka/prompts.chat" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
                     <Heart className="h-4 w-4 text-red-500" />
                     <span>{tHomepage("achievements.mostLikedDataset")}</span>
                   </Link>
-                  <Link href="https://github.com/f/awesome-chatgpt-prompts" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+                  <Link href="https://github.com/f/prompts.chat" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
                     <Star className="h-4 w-4 text-yellow-500" />
                     <span><strong>{(githubStars / 1000).toFixed(0)}k</strong> {tHomepage("achievements.githubStars")}</span>
                   </Link>
-                  <Link href="https://github.com/f/awesome-chatgpt-prompts" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+                  <Link href="https://github.com/f/prompts.chat" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
                     <Trophy className="h-4 w-4 text-purple-500" />
                     <span>{tHomepage("achievements.mostStarredRepo")}</span>
                   </Link>
@@ -402,7 +420,7 @@ export default async function HomePage() {
                           <p className="text-xs text-muted-foreground">President & Co-Founder at OpenAI · Dec 12, 2022</p>
                         </div>
                       </div>
-                      <p className="text-sm text-muted-foreground italic leading-relaxed">&ldquo;Love the community explorations of ChatGPT, from capabilities (https://github.com/f/awesome-chatgpt-prompts) to limitations (...). No substitute for the collective power of the internet when it comes to plumbing the uncharted depths of a new deep learning model.&rdquo;</p>
+                      <p className="text-sm text-muted-foreground italic leading-relaxed">&ldquo;Love the community explorations of ChatGPT, from capabilities (https://github.com/f/prompts.chat) to limitations (...). No substitute for the collective power of the internet when it comes to plumbing the uncharted depths of a new deep learning model.&rdquo;</p>
                     </div>
                   </Link>
                   {/* Wojciech Zaremba */}
@@ -427,7 +445,7 @@ export default async function HomePage() {
                           <p className="text-xs text-muted-foreground">Co-Founder at OpenAI · Dec 10, 2022</p>
                         </div>
                       </div>
-                      <p className="text-sm text-muted-foreground italic leading-relaxed">&ldquo;I love it! https://github.com/f/awesome-chatgpt-prompts&rdquo;</p>
+                      <p className="text-sm text-muted-foreground italic leading-relaxed">&ldquo;I love it! https://github.com/f/prompts.chat&rdquo;</p>
                     </div>
                   </Link>
                   {/* Clement Delangue */}

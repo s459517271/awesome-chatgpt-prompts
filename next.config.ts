@@ -55,6 +55,12 @@ const nextConfig: NextConfig = {
         destination: "/embed",
         permanent: true,
       },
+      // Redirect book PDF downloads to GitHub raw to save Vercel edge bandwidth
+      {
+        source: "/book-pdf/:filename",
+        destination: "https://raw.githubusercontent.com/f/prompts.chat/refs/heads/main/public/book-pdf/:filename",
+        permanent: false,
+      },
     ];
   },
 };
@@ -76,11 +82,10 @@ export default withSentryConfig(withMDX(withNextIntl(nextConfig)), {
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
 
-  // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-  // This can increase your server load as well as your hosting bill.
-  // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-  // side errors will fail.
-  tunnelRoute: "/monitoring",
+  // tunnelRoute removed — was proxying all browser Sentry events through Vercel edge,
+  // generating unnecessary edge requests ($2.45/M) and function invocations ($0.60/M).
+  // Estimated savings: $100-400/month. Trade-off: some ad-blockers may block direct Sentry calls.
+  // See: https://github.com/f/prompts.chat/issues/1085
 
   webpack: {
     // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)

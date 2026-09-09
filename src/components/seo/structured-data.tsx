@@ -44,7 +44,7 @@ export async function StructuredData({ type, data }: StructuredDataProps) {
       },
       description: config.branding.description,
       sameAs: [
-        "https://github.com/f/awesome-chatgpt-prompts",
+        "https://github.com/f/prompts.chat",
         "https://x.com/promptschat",
         "https://x.com/fkadev",
       ],
@@ -199,7 +199,7 @@ export async function StructuredData({ type, data }: StructuredDataProps) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
     />
   );
 }

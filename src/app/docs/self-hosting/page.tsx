@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { Server, Database, Key, Palette, Globe, Settings, Cpu } from "lucide-react";
 import DeepWikiIcon from "@/../public/deepwiki.svg";
 import Context7Icon from "@/../public/context7.svg";
@@ -17,7 +18,9 @@ export const metadata = {
   description: "Deploy your own prompts.chat instance with customizable branding, themes, and authentication",
 };
 
-export default function SelfHostingPage() {
+export default async function SelfHostingPage() {
+  const t = await getTranslations("selfHosting");
+
   return (
     <div className="container max-w-4xl py-10">
       <h1 className="text-2xl font-bold mb-2">Self-Hosting Guide</h1>
@@ -55,7 +58,7 @@ export default function SelfHostingPage() {
               </h3>
               <p className="text-muted-foreground">
                 <Link 
-                  href="https://deepwiki.com/f/awesome-chatgpt-prompts" 
+                  href="https://deepwiki.com/f/prompts.chat" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="underline hover:text-foreground"
@@ -80,7 +83,7 @@ export default function SelfHostingPage() {
               </h3>
               <p className="text-muted-foreground">
                 <Link 
-                  href="https://context7.com/f/awesome-chatgpt-prompts?tab=chat" 
+                  href="https://context7.com/f/prompts.chat?tab=chat" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="underline hover:text-foreground"
@@ -110,10 +113,56 @@ export default function SelfHostingPage() {
               Prerequisites
             </h3>
             <ul className="list-disc list-inside text-muted-foreground space-y-1">
-              <li>Node.js 18+</li>
-              <li>PostgreSQL database</li>
-              <li>npm or yarn</li>
+              <li>{t("prerequisites.nodeJs")}</li>
+              <li>{t("prerequisites.postgresql")}</li>
+              <li>{t("prerequisites.npm")}</li>
             </ul>
+          </div>
+
+          {/* Recommended Database */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              Recommended Database
+            </h3>
+            <div className="rounded-lg border p-4 space-y-4">
+              <p className="text-muted-foreground">
+                prompts.chat requires PostgreSQL. For a hosted database, we recommend{" "}
+                <Link
+                  href="https://get.neon.com/VqfnMo4"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-foreground"
+                >
+                  Neon
+                </Link>
+                {" "}for serverless Postgres, connection pooling, and database branching.
+              </p>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-muted-foreground mb-3">Sponsored by</p>
+                <Link
+                  href="https://get.neon.com/VqfnMo4"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex"
+                >
+                  <Image
+                    src="/sponsors/neon.svg"
+                    alt="Neon"
+                    width={250}
+                    height={72}
+                    className="h-10 w-auto dark:hidden"
+                  />
+                  <Image
+                    src="/sponsors/neon-dark.svg"
+                    alt="Neon"
+                    width={250}
+                    height={72}
+                    className="h-10 w-auto hidden dark:block"
+                  />
+                </Link>
+              </div>
+            </div>
           </div>
 
           {/* Installation */}
@@ -121,8 +170,8 @@ export default function SelfHostingPage() {
             <h3 className="text-lg font-semibold">Quick Start</h3>
           <div className="bg-muted rounded-lg p-4 font-mono text-sm space-y-1 overflow-x-auto">
             <p className="text-muted-foreground"># Clone the repository</p>
-            <p>git clone https://github.com/f/awesome-chatgpt-prompts.git</p>
-            <p>cd awesome-chatgpt-prompts</p>
+            <p>git clone https://github.com/f/prompts.chat.git</p>
+            <p>cd prompts.chat</p>
             <p className="text-muted-foreground mt-3"># Install dependencies</p>
             <p>npm install</p>
             <p className="text-muted-foreground mt-3"># Configure environment</p>
@@ -564,7 +613,7 @@ export default function SelfHostingPage() {
           <p className="text-muted-foreground">
             For issues and questions, please open a{" "}
             <Link 
-              href="https://github.com/f/awesome-chatgpt-prompts/issues" 
+              href="https://github.com/f/prompts.chat/issues" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="underline hover:text-foreground"
@@ -573,7 +622,7 @@ export default function SelfHostingPage() {
             </Link>
             . For the complete documentation, see the{" "}
             <Link 
-              href="https://github.com/f/awesome-chatgpt-prompts/blob/main/SELF-HOSTING.md" 
+              href="https://github.com/f/prompts.chat/blob/main/SELF-HOSTING.md" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="underline hover:text-foreground"

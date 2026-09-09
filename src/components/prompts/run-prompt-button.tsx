@@ -49,7 +49,7 @@ const imagePlatforms: Platform[] = [
     id: "mitte-image",
     name: "Mitte.ai",
     baseUrl: "https://mitte.ai",
-    sponsor: true,
+    sponsor: false,
     subOptions: [
       { name: "Nano Banana", baseUrl: "https://mitte.ai?model=nano-banana" },
       { name: "Nano Banana Pro", baseUrl: "https://mitte.ai?model=nano-banana-pro" },
@@ -65,7 +65,7 @@ const videoPlatforms: Platform[] = [
     id: "mitte-video",
     name: "Mitte.ai",
     baseUrl: "https://mitte.ai",
-    sponsor: true,
+    sponsor: false,
     subOptions: [
       { name: "Veo 3.1", baseUrl: "https://mitte.ai?model=veo-31" },
       { name: "Kling 2.6", baseUrl: "https://mitte.ai?model=kling-26" },
@@ -77,9 +77,10 @@ const videoPlatforms: Platform[] = [
 
 // Code platforms (IDEs + code generation tools)
 const codePlatforms: Platform[] = [
+  { id: "commandcode", name: "Command Code", baseUrl: "https://commandcode.ai/?utm_source=prompts.chat", supportsQuerystring: false, sponsor: true },
   { id: "windsurf", name: "Windsurf", baseUrl: "windsurf://", isDeeplink: true, supportsQuerystring: false, sponsor: true },
-  { id: "vscode", name: "VS Code", baseUrl: "vscode://", isDeeplink: true, supportsQuerystring: false },
-  { id: "vscode-insiders", name: "VS Code Insiders", baseUrl: "vscode-insiders://", isDeeplink: true, supportsQuerystring: false },
+  { id: "vscode", name: "VS Code", baseUrl: "vscode://GitHub.Copilot-Chat/chat", isDeeplink: true },
+  { id: "vscode-insiders", name: "VS Code Insiders", baseUrl: "vscode-insiders://GitHub.Copilot-Chat/chat", isDeeplink: true },
   { id: "cursor", name: "Cursor", baseUrl: "cursor://anysphere.cursor-deeplink/prompt", isDeeplink: true },
   { id: "goose", name: "Goose", baseUrl: "goose://recipe", isDeeplink: true },
     {
@@ -91,6 +92,7 @@ const codePlatforms: Platform[] = [
       { name: "Copilot Agents", baseUrl: "https://github.com/copilot/agents" },
     ],
   },
+  { id: "netlify", name: "Netlify", baseUrl: "https://app.netlify.com/run" },
   { id: "bolt", name: "Bolt", baseUrl: "https://bolt.new" },
   { id: "lovable", name: "Lovable", baseUrl: "https://lovable.dev" },
   { id: "v0", name: "v0", baseUrl: "https://v0.dev/chat" },
@@ -134,6 +136,9 @@ function buildUrl(platformId: string, baseUrl: string, promptText: string, promp
     // IDE deeplinks
     case "cursor":
       return `${baseUrl}?text=${encoded}`;
+    case "vscode":
+    case "vscode-insiders":
+      return `${baseUrl}?prompt=${encoded}`;
     case "goose": {
       const config = JSON.stringify({
         version: "1.0.0",
@@ -173,6 +178,8 @@ function buildUrl(platformId: string, baseUrl: string, promptText: string, promp
       return `${baseUrl}/?prompt=${encoded}`;
     case "lovable":
       return `${baseUrl}/?autosubmit=true#prompt=${encoded}`;
+    case "netlify":
+      return `${baseUrl}?prompt=${encoded}&ref=prompts-chat`;
     case "mistral":
       return `${baseUrl}?q=${encoded}`;
     case "perplexity":
@@ -316,6 +323,7 @@ export function RunPromptButton({
       if (url.startsWith("http://") || url.startsWith("https://")) {
         window.open(url, "_blank");
       } else {
+        // eslint-disable-next-line react-hooks/immutability -- Valid browser navigation for custom URL schemes
         window.location.href = url;
       }
       analyticsPrompt.run(promptId, platform.name);

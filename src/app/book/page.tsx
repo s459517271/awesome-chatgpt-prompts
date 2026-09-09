@@ -1,77 +1,85 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Schoolbell } from "next/font/google";
-import { ArrowRight, BookOpen, Sparkles, Brain, Layers, Target, Lightbulb, Gamepad2 } from "lucide-react";
+import { ArrowRight, BookOpen, Sparkles, Brain, Layers, Target, Lightbulb, Gamepad2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Metadata } from "next";
 import { PixelRobot } from "@/components/kids/elements/pixel-art";
+import { getTranslations, getLocale } from "next-intl/server";
+import { ContinueReadingButton } from "@/components/book/continue-reading";
 
 const kidsFont = Schoolbell({
   subsets: ["latin"],
   weight: "400",
 });
 
-export const metadata: Metadata = {
-  title: "The Interactive Book of Prompting | Free Online Guide to AI Prompt Engineering",
-  description: "Master AI prompt engineering with this free, interactive guide. Learn ChatGPT prompts, chain-of-thought reasoning, few-shot learning, and advanced techniques. 25+ chapters with real examples.",
-  keywords: [
-    "prompt engineering",
-    "ChatGPT prompts",
-    "AI prompts",
-    "prompt engineering guide",
-    "prompt engineering book",
-    "how to write prompts",
-    "AI prompt techniques",
-    "chain of thought prompting",
-    "few-shot learning",
-    "prompt chaining",
-    "system prompts",
-    "LLM prompts",
-    "GPT prompts",
-    "Claude prompts",
-    "AI communication",
-  ],
-  authors: [{ name: "Fatih Kadir Akın", url: "https://github.com/f" }],
-  creator: "Fatih Kadir Akın",
-  publisher: "prompts.chat",
-  openGraph: {
-    title: "The Interactive Book of Prompting",
-    description: "Master AI prompt engineering with this free, interactive guide. Learn ChatGPT prompts, chain-of-thought reasoning, few-shot learning, and 25+ chapters of advanced techniques.",
-    url: "https://prompts.chat/book",
-    siteName: "prompts.chat",
-    images: [
-      {
-        url: "https://prompts.chat/book-cover-photo.jpg",
-        width: 1200,
-        height: 630,
-        alt: "The Interactive Book of Prompting - Free AI Prompt Engineering Guide",
-      },
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("book");
+  const title = t("title");
+  const description = t("metaDescription");
+  
+  return {
+    title: t("metaTitle"),
+    description,
+    keywords: [
+      "prompt engineering",
+      "ChatGPT prompts",
+      "AI prompts",
+      "prompt engineering guide",
+      "prompt engineering book",
+      "how to write prompts",
+      "AI prompt techniques",
+      "chain of thought prompting",
+      "few-shot learning",
+      "prompt chaining",
+      "system prompts",
+      "LLM prompts",
+      "GPT prompts",
+      "Claude prompts",
+      "AI communication",
     ],
-    locale: "en_US",
-    type: "book",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "The Interactive Book of Prompting",
-    description: "Master AI prompt engineering with this free, interactive guide. 25+ chapters with real examples.",
-    images: ["https://prompts.chat/book-cover-photo.jpg"],
-    creator: "@fkadev",
-  },
-  alternates: {
-    canonical: "https://prompts.chat/book",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+    authors: [{ name: "Fatih Kadir Akın", url: "https://github.com/f" }],
+    creator: "Fatih Kadir Akın",
+    publisher: "prompts.chat",
+    openGraph: {
+      title,
+      description,
+      url: "https://prompts.chat/book",
+      siteName: "prompts.chat",
+      images: [
+        {
+          url: "https://prompts.chat/book-cover-photo.jpg",
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+      locale: "en_US",
+      type: "book",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["https://prompts.chat/book-cover-photo.jpg"],
+      creator: "@fkadev",
+    },
+    alternates: {
+      canonical: "https://prompts.chat/book",
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
-};
+  };
+}
 
 // JSON-LD structured data for SEO
 const jsonLd = {
@@ -99,19 +107,22 @@ const jsonLd = {
     name: "Prompt Engineering",
   },
   isAccessibleForFree: true,
-  numberOfPages: 25,
+  numberOfPages: 26,
   bookFormat: "https://schema.org/EBook",
   license: "https://creativecommons.org/publicdomain/zero/1.0/",
 };
 
-export default function BookHomePage() {
+export default async function BookHomePage() {
+  const t = await getTranslations("book");
+  const locale = await getLocale();
+  
   const highlights = [
-    { icon: Brain, text: "Understanding how AI models think and process prompts" },
-    { icon: Target, text: "Crafting clear, specific, and effective prompts" },
-    { icon: Layers, text: "Advanced techniques: chain-of-thought, few-shot learning, and prompt chaining" },
-    { icon: Sparkles, text: "Interactive examples you can try directly in the browser" },
-    { icon: Lightbulb, text: "Real-world use cases for writing, coding, education, and business" },
-    { icon: BookOpen, text: "The future of prompting: agents and agentic systems" },
+    { icon: Brain, text: t("highlights.understanding") },
+    { icon: Target, text: t("highlights.crafting") },
+    { icon: Layers, text: t("highlights.advanced") },
+    { icon: Sparkles, text: t("highlights.interactive") },
+    { icon: Lightbulb, text: t("highlights.realWorld") },
+    { icon: BookOpen, text: t("highlights.future") },
   ];
 
   return (
@@ -119,15 +130,18 @@ export default function BookHomePage() {
       {/* JSON-LD structured data */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <div className="max-w-2xl">
+      {/* Continue Reading Button */}
+      <ContinueReadingButton />
+
       {/* Book Cover Image */}
       <div className="mb-10">
         <div className="relative aspect-video rounded-lg overflow-hidden shadow-2xl">
           <Image
             src="/book-cover-photo.jpg"
-            alt="The Interactive Book of Prompting"
+            alt={t("title")}
             fill
             className="object-cover"
             priority
@@ -137,36 +151,33 @@ export default function BookHomePage() {
 
       {/* Book Cover Header */}
       <div className="mb-10">
-        <p className="text-sm text-muted-foreground mb-4">An Interactive Guide by</p>
+        <p className="text-sm text-muted-foreground mb-4">{t("interactiveGuideBy")}</p>
         <h2 className="text-lg font-medium mb-6">Fatih Kadir Akın</h2>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-          The Interactive Book of Prompting
+          {t("title")}
         </h1>
         <p className="text-xl text-muted-foreground">
-          An Interactive Guide to Crafting Clear and Effective Prompts
+          {t("subtitle")}
         </p>
       </div>
 
       {/* Author Introduction */}
       <div className="mb-10 text-muted-foreground space-y-4">
         <p>
-          Hi, I&apos;m <strong className="text-foreground">Fatih Kadir Akın</strong>, the curator of the popular{" "}
-          <a href="https://github.com/f/awesome-chatgpt-prompts" className="text-primary hover:underline">
-            Awesome ChatGPT Prompts
-          </a>{" "}
-          repository on GitHub and <strong className="text-foreground">prompts.chat</strong>.
+          {t.rich("authorIntro", {
+            author: (chunks) => <strong className="text-foreground">{chunks}</strong>,
+            repoLink: (chunks) => <a href="https://github.com/f/prompts.chat" className="text-primary hover:underline">{chunks}</a>,
+            siteName: (chunks) => <strong className="text-foreground">{chunks}</strong>,
+          })}
         </p>
         <p>
-          In this comprehensive and interactive guide, you&apos;ll discover expert strategies for crafting 
-          compelling AI prompts that drive engaging and effective conversations. From understanding 
-          how AI models work to mastering advanced techniques like prompt chaining and agentic systems, 
-          this book provides you with the tools you need to take your AI interactions to the next level.
+          {t("bookDescription")}
         </p>
       </div>
 
       {/* Highlights */}
       <div className="mb-10">
-        <h3 className="text-sm font-semibold text-foreground mb-4">What you&apos;ll learn:</h3>
+        <h3 className="text-sm font-semibold text-foreground mb-4">{t("whatYouWillLearn")}</h3>
         <div className="space-y-3">
           {highlights.map((item, index) => (
             <div key={index} className="flex items-start gap-3">
@@ -179,16 +190,16 @@ export default function BookHomePage() {
 
       {/* Book Structure */}
       <div className="mb-10 p-6 bg-muted/30 rounded-lg">
-        <h3 className="text-sm font-semibold text-foreground mb-3">Book Structure</h3>
+        <h3 className="text-sm font-semibold text-foreground mb-3">{t("bookStructure")}</h3>
         <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-          <div>• Introduction</div>
-          <div>• Part 1: Foundations</div>
-          <div>• Part 2: Techniques</div>
-          <div>• Part 3: Advanced Strategies</div>
-          <div>• Part 4: Best Practices</div>
-          <div>• Part 5: Use Cases</div>
-          <div>• Part 6: Conclusion</div>
-          <div>• 25 Interactive Chapters</div>
+          <div>• {t("structure.introduction")}</div>
+          <div>• {t("structure.part1")}</div>
+          <div>• {t("structure.part2")}</div>
+          <div>• {t("structure.part3")}</div>
+          <div>• {t("structure.part4")}</div>
+          <div>• {t("structure.part5")}</div>
+          <div>• {t("structure.part6")}</div>
+          <div>• {t("structure.chapters")}</div>
         </div>
       </div>
 
@@ -196,20 +207,26 @@ export default function BookHomePage() {
       <div className="mb-10 flex flex-col sm:flex-row gap-3">
         <Button asChild size="lg">
           <Link href="/book/00a-preface">
-            Start Reading
+            {t("startReading")}
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
         <Button asChild variant="outline" size="lg">
           <Link href="/book/01-understanding-ai-models">
-            Skip to Chapter 1
+            {t("skipToChapter1")}
           </Link>
+        </Button>
+        <Button asChild variant="outline" size="lg">
+          <a href={`https://raw.githubusercontent.com/f/prompts.chat/refs/heads/main/public/book-pdf/book-${locale}-print.pdf`} download>
+            <Download className="mr-2 h-4 w-4" />
+            {t("downloadPdf")}
+          </a>
         </Button>
       </div>
 
       {/* Note */}
       <div className="text-sm text-muted-foreground italic">
-        <p>This book is continuously updated with new techniques and insights as AI evolves.</p>
+        <p>{t("continuousUpdate")}</p>
       </div>
 
       {/* Kids Playable Book Section */}
@@ -220,18 +237,18 @@ export default function BookHomePage() {
           </div>
           <div className="flex-1 text-center sm:text-left">
             <p className="text-lg text-amber-800 dark:text-amber-200 mb-1">
-              Are you a school teacher or a parent?
+              {t("kidsSection.question")}
             </p>
             <h3 className={`text-2xl md:text-3xl font-bold text-amber-900 dark:text-amber-100 mb-3 pixel-text-shadow ${kidsFont.className}`}>
-              Try our Playable Book for Kids! 🎮
+              {t("kidsSection.title")}
             </h3>
             <p className="text-sm text-amber-700 dark:text-amber-300 mb-4">
-              An interactive, game-based adventure to teach children (ages 8-14) how to communicate with AI through fun puzzles and stories.
+              {t("kidsSection.description")}
             </p>
             <Button asChild className="bg-green-500 hover:bg-green-600 text-white">
               <a href="/kids">
                 <Gamepad2 className="mr-2 h-4 w-4" />
-                Start Playing
+                {t("kidsSection.startPlaying")}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </a>
             </Button>
@@ -242,11 +259,9 @@ export default function BookHomePage() {
       {/* Footer */}
       <div className="mt-12 pt-6 border-t text-sm text-muted-foreground">
         <p>
-          Part of the{" "}
-          <a href="https://github.com/f/awesome-chatgpt-prompts" className="text-primary hover:underline">
-            Awesome ChatGPT Prompts
-          </a>{" "}
-          project. Licensed under CC0.
+          {t.rich("partOfProject", {
+            repoLink: (chunks) => <a href="https://github.com/f/prompts.chat" className="text-primary hover:underline">{chunks}</a>,
+          })}
         </p>
       </div>
       </div>

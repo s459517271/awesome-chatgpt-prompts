@@ -9,6 +9,7 @@ import { CookieConsentBanner } from "@/components/layout/cookie-consent";
 import { Analytics } from "@/components/layout/analytics";
 import { WebsiteStructuredData } from "@/components/seo/structured-data";
 import { AppBanner } from "@/components/layout/app-banner";
+import { AnnouncementBanner } from "@/components/layout/announcement-banner";
 import { LocaleDetector } from "@/components/providers/locale-detector";
 import { getConfig } from "@/lib/config";
 import { isRtlLocale } from "@/lib/i18n/config";
@@ -61,12 +62,12 @@ export const metadata: Metadata = {
   publisher: "prompts.chat",
   icons: {
     icon: [
-      { url: "/favicon/favicon.ico", sizes: "48x48" },
-      { url: "/favicon/favicon-96x96.png", sizes: "96x96", type: "image/png" },
       { url: "/favicon/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon/favicon.ico", sizes: "48x48" },
     ],
     apple: "/favicon/apple-touch-icon.png",
-    shortcut: "/favicon/favicon.ico",
+    shortcut: "/favicon/favicon.svg",
   },
   manifest: "/favicon/site.webmanifest",
   other: {
@@ -180,6 +181,9 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={isRtl ? "rtl" : "ltr"} suppressHydrationWarning className={themeClasses} style={themeStyles}>
       <head>
+        {process.env.GOOGLE_ADSENSE_ACCOUNT && (
+          <meta name="google-adsense-account" content={process.env.GOOGLE_ADSENSE_ACCOUNT} />
+        )}
         <WebsiteStructuredData />
       </head>
       <body className={`${fontClasses} antialiased`}>
@@ -193,6 +197,7 @@ export default async function RootLayout({
             <>
               <LocaleDetector />
               <div className="relative min-h-screen flex flex-col">
+                <AnnouncementBanner />
                 <Header authProvider={config.auth.provider} allowRegistration={config.auth.allowRegistration} />
                 <main className="flex-1">{children}</main>
                 <Footer />
